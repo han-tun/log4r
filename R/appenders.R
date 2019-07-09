@@ -140,3 +140,40 @@ http_appender <- function(url, method = "POST", layout = default_log_layout(),
     }
   }
 }
+
+#' Log Messages to the Local Syslog
+#'
+#' Send messages to the local syslog. Requires the \code{rsyslog} package.
+#'
+#' @param identifier A string identifying the application.
+#' @param layout A layout function taking a \code{level} parameter and
+#'   additional arguments corresponding to the message.
+#' @param ... Further arguments passed on to \code{\link[rsyslog]{open_syslog}}.
+#'
+#' @seealso \code{\link{appenders}} for more information on Appenders.
+#'
+#' @export
+syslog_appender <- function(identifier, layout = bare_log_layout(), ...) {
+  if (!requireNamespace("rsyslog", quietly = TRUE)) {
+    stop("The 'rsyslog' package is required to use this syslog appender.")
+  }
+  stopifnot(is.function(layout))
+  layout <- compiler::cmpfun(layout)
+
+  rsyslog::open_syslog(identifier = identifier, ...)
+
+  # Override any existing masking. Priority thresholds are handled by the
+  # package instead of by syslog.
+  rsyslog::set_syslog_mask("DEBUG")
+
+  function(level, ...) {
+    msg <- layout(level, ...)
+    # Translate between log4j and syslog priority levels. Using a switch
+    # statement turns out to be faster than a lookup.
+    syslog_level <- switch(
+      level, "TRACE" = "DEBUG", "DEBUG" = "DEBUG", "INFO" = "INFO",
+      "WARN" = "WARNING", "ERROR" = "ERR", "FATAL" = "CRITICAL"
+    )
+    rsyslog::syslog(msg, level = syslog_level)
+  }
+}
