@@ -4,6 +4,7 @@
 \alias{layouts}
 \alias{default_log_layout}
 \alias{simple_log_layout}
+\alias{bare_log_layout}
 \alias{json_log_layout}
 \alias{csv_log_layout}
 \title{Layouts}
@@ -11,6 +12,8 @@
 default_log_layout(time_format = "\%Y-\%m-\%d \%H:\%M:\%S")
 
 simple_log_layout()
+
+bare_log_layout()
 
 json_log_layout(pretty = FALSE,
   time_format = "\%Y-\%m-\%d \%H:\%M:\%S")

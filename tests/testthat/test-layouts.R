@@ -7,6 +7,9 @@ test_that("Basic layouts work correctly", {
   layout <- default_log_layout()
   expect_match(layout("INFO", "Message"), "Message")
 
+  layout <- bare_log_layout()
+  expect_match(layout("INFO", "Message"), "Message")
+
   layout <- csv_log_layout()
   expect_match(layout("INFO", "Message"), ",Message\\n", )
   expect_match(layout("INFO", "Message", "Second"), ",Message,Second\\n")

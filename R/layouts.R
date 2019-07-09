@@ -54,6 +54,16 @@ simple_log_layout <- function() {
   }
 }
 
+#' @rdname layouts
+#' @aliases bare_log_layout
+#' @export
+bare_log_layout <- function() {
+  function(level, ...) {
+    msg <- paste0(..., collapse = "")
+    sprintf("%s\n", msg)
+  }
+}
+
 #' @details \code{json_log_layout} requires the \code{jsonlite} package.
 #'
 #' @param pretty When \code{TRUE}, format JSON with whitespace and indentation.
